@@ -1,0 +1,80 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+/*    const int ballons = 4;
+    const int months = 3;
+    double pressure[months][ballons] = {
+        {1.37, 0.78, 0.93, 1.14},
+        {0.84, 1.23, 0.81, 0.99},
+        {1.23, 0.84, 0.93, 0.87}*/
+    };
+
+    // Ausgabe der Eingabeinformationen
+    cout << "Eingabe von Luftdruck-Werten in bar." << endl;
+    cout << "Letzter Beobachtungsmonat (1..12): " << months << endl;
+    cout << "Anzahl der Messballons: " << ballons << endl;
+
+    // Ausgabe der Messwerte in einer Tabelle
+    for (int month = 0; month < months; ++month) {
+        cout << (month + 1) << ". Monat." << endl;
+        for (int ballon = 0; ballon < ballons; ++ballon) {
+            cout << "Druck bei Ballon Nr. " << (ballon + 1) << ": " << fixed << setprecision(2) << pressure[month][ballon] << endl;
+        }
+    }
+
+    // Berechnung der Mittelwerte
+    double ballonAverages[ballons] = {0};
+    double monthAverages[months] = {0};
+    double totalAverage = 0;
+
+    for (int ballon = 0; ballon < ballons; ++ballon) {
+        double sum = 0;
+        for (int month = 0; month < months; ++month) {
+            sum += pressure[month][ballon];
+        }
+        ballonAverages[ballon] = sum / months;
+        totalAverage += sum;
+    }
+
+    totalAverage /= (ballons * months);
+
+    for (int month = 0; month < months; ++month) {
+        double sum = 0;
+        for (int ballon = 0; ballon < ballons; ++ballon) {
+            sum += pressure[month][ballon];
+        }
+        monthAverages[month] = sum / ballons;
+    }
+
+    // Ausgabe der Druckmessungen und Durchschnittswerte
+    cout << "\nDruckmessungen." << endl;
+    cout << "Feld links oben: Gesamtdurchschnitt aller gemessenen Druecke." << endl;
+    cout << "Oberste Zeile (Monat 0): Durchschnittsdrucke aller Monate bei jedem Ballon." << endl;
+    cout << "Linke Spalte (Ballon 0): Durchschnittsdrucke aller Ballons in jedem Monat." << endl;
+
+    cout << fixed << setprecision(2);
+    cout << "\t\tBallon Nr." << endl;
+    cout << "\t0\t1\t2\t3\t4" << endl;
+    cout << "Monat 0\t";
+    cout << totalAverage << "\t";
+    for (int ballon = 0; ballon < ballons; ++ballon) {
+        cout << ballonAverages[ballon] << "\t";
+    }
+    cout << endl;
+
+    for (int month = 0; month < months; ++month) {
+        cout << "Monat " << (month + 1) << "\t";
+        cout << monthAverages[month] << "\t";
+        for (int ballon = 0; ballon < ballons; ++ballon) {
+            cout << pressure[month][ballon] << "\t";
+        }
+        cout << endl;
+    }
+
+    cout << "Druecken Sie eine beliebige Taste . . ." << endl;
+
+    return 0;
+}
