@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subnetzrechner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .subnet {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subnetzrechner</h1>
+        <div class="input-group">
+            <label for="network">Netzwerkadresse (z.B. 192.168.42.0/24):</label>
+            <input type="text" id="network" placeholder="192.168.42.0/24">
+        </div>
+        <div class="input-group">
+            <label for="subnets">Anzahl der Subnetze:</label>
+            <input type="number" id="subnets" min="1" max="1024" placeholder="4">
+        </div>
+        <button onclick="calculateSubnets()">Berechnen</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        function ipToInt(ip) {
+            return ip.split('.').reduce((int, octet) => (int << 8) + parseInt(octet, 10), 0) >>> 0;
+        }
+
+        function intToIp(int) {
+            return ((int >>> 24) + '.' + (int >> 16 & 255) + '.' + (int >> 8 & 255) + '.' + (int & 255));
+        }
+
+        function calculateSubnets() {
+            const networkInput = document.getElementById('network').value;
+            const subnetsInput = parseInt(document.getElementById('subnets').value);
+
+            const [network, prefixLength] = networkInput.split('/');
+            const prefix = parseInt(prefixLength);
+
+            const newPrefix = prefix + Math.ceil(Math.log2(subnetsInput));
+            const numberOfSubnets = Math.pow(2, newPrefix - prefix);
+            const increment = Math.pow(2, 32 - newPrefix);
+
+            const networkAddress = ipToInt(network);
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            for (let i = 0; i < numberOfSubnets; i++) {
+                const subnetAddress = networkAddress + i * increment;
+                const broadcastAddress = subnetAddress + increment - 1;
+                const firstHost = subnetAddress + 1;
+                const lastHost = broadcastAddress - 1;
+
+                const subnetDiv = document.createElement('div');
+                subnetDiv.className = 'subnet';
+                subnetDiv.innerHTML = `
+                    <strong>Subnetz ${i + 1}:</strong><br>
+                    Netz-ID: ${intToIp(subnetAddress)}<br>
+                    Hostbereich: ${intToIp(firstHost)} - ${intToIp(lastHost)}<br>
+                    Broadcast-Adresse: ${intToIp(broadcastAddress)}
+                `;
+                resultsDiv.appendChild(subnetDiv);
+            }
+        }
+    </script>
+</body>
+</html>
