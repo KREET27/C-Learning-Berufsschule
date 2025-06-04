@@ -4,12 +4,12 @@
 using namespace std;
 
 int main() {
-/*    const int ballons = 4;
+    const int ballons = 4;
     const int months = 3;
     double pressure[months][ballons] = {
         {1.37, 0.78, 0.93, 1.14},
         {0.84, 1.23, 0.81, 0.99},
-        {1.23, 0.84, 0.93, 0.87}*/
+        {1.23, 0.84, 0.93, 0.87}
     };
 
     // Ausgabe der Eingabeinformationen
